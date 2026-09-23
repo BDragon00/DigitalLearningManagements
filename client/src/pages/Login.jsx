@@ -1,92 +1,105 @@
 import { useState } from "react";
-import AdminDashboard from "../admin/adminDashboard";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { apiFetch, saveSession } from "../api";
+import "./auth.css";
 
 function Login() {
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const expired = searchParams.get("expired") === "1";
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
-            setError("");
+        setError("");
+        setLoading(true);
 
         try {
-            const response = await fetch(
-                "http://localhost:5000/api/auth/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                },
-                    body: JSON.stringify({
-                        Email,
-                        Password,
-                }),
+            const data = await apiFetch("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({ Email, Password }),
+            });
+
+            saveSession(data.token, data.user);
+
+            switch (data.user.RoleName) {
+                case "Admin":
+                    navigate("/admin");
+                    break;
+                case "Teacher":
+                    navigate("/teacher");
+                    break;
+                case "Student":
+                    navigate("/student");
+                    break;
+                default:
+                    navigate("/login");
             }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            setError(data.message || "Đăng nhập thất bại");
-            return;
+        } catch (err) {
+            setError(err.message || "Unable to connect to the server");
+        } finally {
+            setLoading(false);
         }
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        if (data.user.RoleName === "Admin") {
-            setIsLoggedIn(true);
-            return;
-        }
-
-        console.log("Login successful:", data);
-        console.log("ROLE:", data.user.RoleName);
-    } catch (error) {
-        console.error("Login failed:", error);
-        setError("Không thể kết nối đến Server");
-    }
-};
-
-if (isLoggedIn) {
-    return <AdminDashboard />;
-}
+    };
 
     return (
-        <div>
-            <h1>Đăng nhập</h1>
+        <div className="auth-page">
+            <div className="auth-card">
+                <div className="auth-eyebrow">EduHub</div>
+                <h1>Sign in</h1>
+                <p className="auth-subtitle">
+                    Access the platform to view and manage learning materials.
+                </p>
 
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        value={Email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Nhập email"
-                        required
-                    />
-                </div>
+                {expired && (
+                    <p className="auth-error">
+                        Your session has expired. Please sign in again.
+                    </p>
+                )}
 
-                <div>
-                    <label>Mật khẩu</label>
-                    <input
-                        type="password"
-                        value={Password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Nhập mật khẩu"
-                        required
-                    />
-                </div>
+                <form className="auth-form" onSubmit={handleLogin}>
+                    <div className="field">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            value={Email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="you@example.com"
+                            required
+                        />
+                    </div>
 
-                {error && <p>{error}</p>}
+                    <div className="field">
+                        <div className="field-row">
+                            <label>Password</label>
+                            <Link className="field-link" to="/forgot-password">
+                                Forgot password?
+                            </Link>
+                        </div>
+                        <input
+                            type="password"
+                            value={Password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
 
-                <button type="submit">
-                    Đăng nhập
-                </button>
-            </form>
+                    {error && <p className="auth-error">{error}</p>}
+
+                    <button className="btn" type="submit" disabled={loading}>
+                        {loading ? "Signing in..." : "Sign in"}
+                    </button>
+                </form>
+
+                <p className="auth-switch">
+                    Don't have an account? <Link to="/register">Sign up</Link>
+                </p>
+            </div>
         </div>
     );
 }

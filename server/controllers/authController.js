@@ -107,7 +107,148 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
+// Change password (self-service)
+const changePassword = async (req, res) => {
+    try {
+        const { CurrentPassword, NewPassword } = req.body;
+
+        const result = await sql.query`
+            SELECT UserID, PasswordHash
+            FROM Users
+            WHERE UserID = ${req.user.UserID}
+        `;
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const user = result.recordset[0];
+
+        const isCurrentValid = await bcrypt.compare(
+            CurrentPassword,
+            user.PasswordHash
+        );
+
+        if (!isCurrentValid) {
+            return res.status(401).json({
+                message: "Current password is incorrect"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(NewPassword, 10);
+
+        await sql.query`
+            UPDATE Users
+            SET PasswordHash = ${hashedPassword}
+            WHERE UserID = ${req.user.UserID}
+        `;
+
+        res.json({
+            message: "Password changed successfully"
+        });
+    } catch (error) {
+        console.error("Change password failed:", error);
+
+        res.status(500).json({
+            message: "Failed to change password",
+            error: error.message
+        });
+    }
+};
+
+// Get the security question for an email (forgot-password flow, step 1)
+const getSecurityQuestion = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        const result = await sql.query`
+            SELECT SecurityQuestion
+            FROM Users
+            WHERE Email = ${email}
+        `;
+
+        if (
+            result.recordset.length === 0 ||
+            !result.recordset[0].SecurityQuestion
+        ) {
+            return res.status(404).json({
+                message: "No security question set up for this email"
+            });
+        }
+
+        res.json({
+            SecurityQuestion: result.recordset[0].SecurityQuestion
+        });
+    } catch (error) {
+        console.error("Get security question failed:", error);
+
+        res.status(500).json({
+            message: "Failed to get security question",
+            error: error.message
+        });
+    }
+};
+
+// Reset password using the security question answer (forgot-password flow, step 2)
+const resetPassword = async (req, res) => {
+    try {
+        const { Email, SecurityAnswer, NewPassword } = req.body;
+
+        const result = await sql.query`
+            SELECT UserID, SecurityAnswerHash
+            FROM Users
+            WHERE Email = ${Email}
+        `;
+
+        if (
+            result.recordset.length === 0 ||
+            !result.recordset[0].SecurityAnswerHash
+        ) {
+            return res.status(404).json({
+                message: "No security question set up for this email"
+            });
+        }
+
+        const user = result.recordset[0];
+
+        const isAnswerValid = await bcrypt.compare(
+            SecurityAnswer.trim().toLowerCase(),
+            user.SecurityAnswerHash
+        );
+
+        if (!isAnswerValid) {
+            return res.status(401).json({
+                message: "Incorrect answer"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(NewPassword, 10);
+
+        await sql.query`
+            UPDATE Users
+            SET PasswordHash = ${hashedPassword}
+            WHERE UserID = ${user.UserID}
+        `;
+
+        res.json({
+            message: "Password reset successfully"
+        });
+    } catch (error) {
+        console.error("Reset password failed:", error);
+
+        res.status(500).json({
+            message: "Failed to reset password",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     login,
-    getCurrentUser
+    getCurrentUser,
+    changePassword,
+    getSecurityQuestion,
+    resetPassword
 };

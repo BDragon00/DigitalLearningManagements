@@ -1,0 +1,201 @@
+.teacher-page {
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.teacher-page h1 {
+    font-size: 30px;
+}
+
+.teacher-eyebrow {
+    color: var(--color-accent);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.teacher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.teacher-header nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.teacher-header nav a {
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--color-text-muted);
+}
+
+.teacher-header nav a:hover {
+    color: var(--color-accent);
+}
+
+.teacher-page h2 {
+    font-size: 20px;
+    margin: 32px 0 16px;
+}
+
+.upload-form {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.upload-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.upload-form input,
+.upload-form select,
+.upload-form textarea {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    font-family: var(--font-body);
+}
+
+.upload-form button {
+    align-self: flex-start;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.upload-form button:hover {
+    background: var(--color-accent-deep);
+}
+
+.upload-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-message {
+    font-size: 13px;
+}
+
+.form-message.success {
+    color: var(--color-success);
+}
+
+.form-message.error {
+    color: var(--color-danger);
+}
+
+.field-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-label-text {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+}
+
+.file-input-button {
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.file-input-button:hover {
+    border-color: var(--color-accent);
+}
+
+.file-input-name {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.my-material-row {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+}
+
+.my-material-row .row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.my-material-row .row-meta {
+    font-size: 13px;
+    color: var(--color-text-faint);
+}
+
+.my-material-row .row-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.my-material-row .row-actions button {
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.my-material-row .row-actions button.danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+    background: transparent;
+}
+
+.edit-form {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

@@ -1,0 +1,66 @@
+.student-page {
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.student-eyebrow {
+    color: var(--color-accent);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.student-page h1 {
+    font-size: 30px;
+    margin-bottom: 4px;
+}
+
+.student-page > p {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+}
+
+.student-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.student-header nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.student-header nav a {
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--color-text-muted);
+}
+
+.student-header nav a:hover {
+    color: var(--color-accent);
+}
+
+.student-cta-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-md);
+    padding: 28px;
+}
+
+.student-cta-card h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.student-cta-card p {
+    color: var(--color-text-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}

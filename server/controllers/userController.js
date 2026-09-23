@@ -32,10 +32,15 @@ const createUser = async (req, res) => {
         const {
             FullName,
             Email,
-            PasswordHash
+            PasswordHash,
+            SecurityQuestion,
+            SecurityAnswer
         } = req.body;
 
         const hashedPassword = await bcrypt.hash(PasswordHash, 10);
+        const hashedAnswer = SecurityAnswer
+            ? await bcrypt.hash(SecurityAnswer.trim().toLowerCase(), 10)
+            : null;
 
         // Public registration can only create Student accounts
         const RoleID = 1;
@@ -45,7 +50,9 @@ const createUser = async (req, res) => {
                 FullName,
                 Email,
                 PasswordHash,
-                RoleID
+                RoleID,
+                SecurityQuestion,
+                SecurityAnswerHash
             )
             OUTPUT
                 INSERTED.UserID,
@@ -57,7 +64,9 @@ const createUser = async (req, res) => {
                 ${FullName},
                 ${Email},
                 ${hashedPassword},
-                ${RoleID}
+                ${RoleID},
+                ${SecurityQuestion || null},
+                ${hashedAnswer}
             )
         `;
 
